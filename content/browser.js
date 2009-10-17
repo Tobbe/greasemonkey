@@ -164,6 +164,10 @@ GM_BrowserUI.contentLoad = function(e) {
  * a user selects "show script source" in the install dialog.
  */
 GM_BrowserUI.showInstallBanner = function(browser) {
+  if (!this.scriptDownloader_.isShowingSource()) {
+    return;
+  }
+
   var greeting = this.bundle.getString("greeting.msg");
 
   if (this.tabBrowser.showMessage) {

@@ -80,6 +80,15 @@ ScriptDownloader.prototype.handleScriptDownloadComplete = function() {
     converter.charset = "UTF-8";
     source = converter.ConvertFromUnicode(source);
 
+    if (source.match(/^(?:\\n|\s)*<!DOCTYPE/im)) {
+        Components.classes["@greasemonkey.mozdev.org/greasemonkey-service;1"]
+        .getService().wrappedJSObject.ignoreNextScript();
+
+        content.location = this.uri_.spec;
+
+        return;
+    }
+
     var ws = getWriteStream(file);
     ws.write(source, source.length);
     ws.close();
@@ -227,6 +236,7 @@ ScriptDownloader.prototype.cleanupTempFiles = function() {
 };
 
 ScriptDownloader.prototype.showInstallDialog = function(timer) {
+  this.installing_ = false;
   if (!timer) {
     // otherwise, the status bar stays in the loading state.
     this.win_.setTimeout(GM_hitch(this, "showInstallDialog", true), 0);
@@ -238,8 +248,13 @@ ScriptDownloader.prototype.showInstallDialog = function(timer) {
 };
 
 ScriptDownloader.prototype.showScriptView = function() {
+  this.installing_ = false;
   this.win_.GM_BrowserUI.showScriptView(this);
 };
+
+ScriptDownloader.prototype.isShowingSource = function() {
+  return !this.installing_;
+}
 
 function NotificationCallbacks() {}
 

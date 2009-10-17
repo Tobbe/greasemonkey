@@ -81,12 +81,12 @@ ScriptDownloader.prototype.handleScriptDownloadComplete = function() {
     source = converter.ConvertFromUnicode(source);
 
     if (source.match(/^(?:\\n|\s)*<!DOCTYPE/im)) {
-        Components.classes["@greasemonkey.mozdev.org/greasemonkey-service;1"]
-        .getService().wrappedJSObject.ignoreNextScript();
+      Components.classes["@greasemonkey.mozdev.org/greasemonkey-service;1"]
+      .getService().wrappedJSObject.ignoreNextScript();
 
-        content.location = this.uri_.spec;
+      content.location.href = this.uri_.spec;
 
-        return;
+      return;
     }
 
     var ws = getWriteStream(file);
